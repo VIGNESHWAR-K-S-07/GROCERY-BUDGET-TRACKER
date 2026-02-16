@@ -143,12 +143,14 @@ table {
 }
 
 .Download-btn,
-.Edit-btn {
+.Edit-btn,
+.Delete-btn {
   background-color: #ff8c42;
   text-align: center;
   cursor: pointer;
   height: 40px;
   padding: 8px;
+  font-weight: bold;
 }
 
 .Download-btn:hover {
@@ -203,6 +205,102 @@ table {
 }
 .swipeLeft {
   transform: translateX(0px);
+}
+
+.table-row {
+  transition: transform 0.4s ease;
+  animation: slideUp 0.4s forwards ease;
+}
+
+.app.light .highlight {
+  background-color: #ffcccc;
+  transition: background-color 0.3s ease;
+  animation: pulse 1s ease;
+}
+.app.dark .highlight {
+  background-color: #fc793c;
+  transition: background-color 0.3s ease;
+  animation: darkPulse 1s ease;
+}
+.undo-toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #333;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  /* animation: slideDown 0.3s ease; */
+}
+.undo-toast .app.light {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #ffffff;
+  color: #2c2a29;
+  padding: 10px 16px;
+  border-radius: 8px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  /* animation: slideDown 0.3s ease; */
+}
+.undo-toast button {
+  background: transparent;
+  padding: 5px;
+  border: none;
+  color: #222425;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+@keyframes slideDown {
+  from {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes darkPulse {
+  0% {
+    background-color: #fc793c;
+  }
+  50% {
+    background-color: #fa9b6f;
+  }
+  100% {
+    background-color: #fc793c;
+  }
+}
+@keyframes Pulse {
+  0% {
+    background-color: #ffcccc;
+  }
+  50% {
+    background-color: #ff9999;
+  }
+  100% {
+    background-color: #ffcccc;
+  }
 }
 
 @media (max-width: 600px) {

@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+import "./App.css";
 import Grocery_budget_tracker from "./components/grocery_budget_tracker";
 
 function App() {

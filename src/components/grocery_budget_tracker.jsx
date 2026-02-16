@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useEffect, useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import jsPDF from "jspdf";
@@ -202,7 +202,9 @@ const Grocery_budget_tracker = () => {
             setIsDarkMode(!isDarkMode);
           }}
         >
-          <span className={isDarkMode ? "swipeRight" : "swipeLeft"}>{isDarkMode ? "🌞" : "🌙"}</span>
+          <span className={isDarkMode ? "swipeRight" : "swipeLeft"}>
+            {isDarkMode ? "🌞" : "🌙"}
+          </span>
         </div>
         <h1>WELCOME TO THE GROCERY BUDGET TRACKER!</h1>
         <h2>Lets track every rupee spend on grocery!</h2>

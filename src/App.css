@@ -1,6 +1,14 @@
 #body{
-  margin: 0;
+  margin: 10px;
   padding: 10px;
 
+}
+.app.dark {
+  background-color: #2c2a29;
+  color: #e2dfdf;
+}
+.app.light {
+  background-color: #ffffff;
+  color: #2c2a29;
 }
 
