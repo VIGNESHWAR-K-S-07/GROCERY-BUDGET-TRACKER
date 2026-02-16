@@ -33,6 +33,14 @@ const Grocery_budget_tracker = () => {
     "OTHERS",
   ];
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [duplicateIndex, setDuplicateIndex] = useState(null);
+  const [deletedItem, setDeletedItem] = useState(null);
+  const [deletingID, setDeletingID] = useState(null);
+  const [deletedIndex, setDeletedIndex] = useState(null);
+  const [undoTimer, setUndoTimer] = useState(null);
+  const [countdown, setCountdown] = useState(0);
+
+  const rowRef = useRef([]);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -43,6 +51,23 @@ const Grocery_budget_tracker = () => {
   useEffect(() => {
     localStorage.setItem("theme", isDarkMode ? "dark" : "light");
   }, [isDarkMode]);
+  useEffect(() => {
+    if (duplicateIndex !== null && rowRef.current[duplicateIndex]) {
+      rowRef.current[duplicateIndex].scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [duplicateIndex]);
+  useEffect(() => {
+    if (countdown === 0) {
+      return;
+    }
+    const timer = setInterval(() => {
+      setCountdown((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [countdown]);
 
   // To Add an item in the List
 
@@ -64,6 +89,31 @@ const Grocery_budget_tracker = () => {
       return;
     }
 
+    const duplicateName = name.trim().toLowerCase();
+
+    if (editItem !== null) {
+      const updatedItem = items.map((item) =>
+        item.id === editItem
+          ? { ...item, name, price, Weight, weightUnit, quantity, category }
+          : item,
+      );
+      setItems(updatedItem);
+      setEditItem(null);
+      return;
+    }
+    const duplicate = items.findIndex(
+      (item) => item.name.toLowerCase() === duplicateName,
+    );
+    if (duplicate !== -1) {
+      setDuplicateIndex(duplicate);
+      setErrorMessage("The Item already exists!");
+      setTimeout(() => {
+        setErrorMessage("");
+        setDuplicateIndex(null);
+      }, 3000);
+      return;
+    }
+
     if (name && price) {
       const newItem = {
         id: Date.now(),
@@ -74,7 +124,7 @@ const Grocery_budget_tracker = () => {
         quantity: Number(quantity),
         category: String(category).toUpperCase() || "Uncategorized",
       };
-      setItems(items.concat(newItem));
+      setItems([...items, newItem]);
       setNames("");
       setPrice("");
       setWeight("");
@@ -261,7 +311,12 @@ const Grocery_budget_tracker = () => {
           )}
 
           {errorMessage && (
-            <p style={{ color: "red", fontWeight: "bold" }}>{errorMessage}</p>
+            <p
+              style={{ color: "red", fontWeight: "bold" }}
+              className="duplicateMsg"
+            >
+              {errorMessage}
+            </p>
           )}
         </form>
         {/* FORM ENDS */}
@@ -295,9 +350,15 @@ const Grocery_budget_tracker = () => {
                 textAlign: "center",
               }}
             >
-              {items.map(function (item) {
+              {items.map(function (item, index) {
                 return (
-                  <tr key={item.id}>
+                  <tr
+                    className={
+                      duplicateIndex === index ? "highlight" : "table-row"
+                    }
+                    key={item.id}
+                    ref={(e) => (rowRef.current[index] = e)}
+                  >
                     <td>{item.name}</td>
                     <td>{item.price}</td>
                     <td>

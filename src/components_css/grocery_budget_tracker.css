@@ -189,6 +189,10 @@ table {
   background-color: #2c2a29;
   color: #e2dfdf;
 }
+.app.dark .duplicateMsg {
+  background-color: #442222;
+  color: #ffb3b3;
+}
 .app.light {
   background-color: #ffffff;
   color: #2c2a29;
