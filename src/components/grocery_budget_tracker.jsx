@@ -135,25 +135,41 @@ const Grocery_budget_tracker = () => {
       setSuccessMessage("The Item Added Sucessfully :)");
       setTimeout(() => setSuccessMessage(""), 3000);
     }
-
-    if (editItem !== null) {
-      const updatedItem = items.map((item) =>
-        item.id === editItem
-          ? { ...item, name, price, Weight, weightUnit, quantity, category }
-          : item,
-      );
-      setItems(updatedItem);
-      setEditItem(null);
-    }
   }
 
   // Function that handles the remove an item from the list
-  function removeItems(id) {
-    const filteredList = items.filter(function (item) {
-      return item.id !== id;
-    });
-    setItems(filteredList);
-  }
+  const removeItems = (id) => {
+    const index = items.findIndex((item) => item.id === id);
+    const itemToDelete = items[index];
+    setDeletingID(id);
+    setCountdown(5);
+    setTimeout(() => {
+      setItems((prev) => prev.filter((item) => item.id !== id));
+      setDeletingID(null);
+      setDeletedItem(itemToDelete);
+      setDeletedIndex(index);
+
+      const timeout = setTimeout(() => {
+        setDeletedIndex(null);
+        setDeletedItem(null);
+      }, 5000);
+      setUndoTimer(timeout);
+    }, 500);
+  };
+
+  const handleUndo = () => {
+    if (deletedItem !== null && deletedIndex !== null) {
+      setItems((prev) => {
+        const updated = [...prev];
+        updated.splice(deletedIndex, 0, deletedItem);
+        return updated;
+      });
+      clearTimeout(undoTimer);
+      setDeletedIndex(null);
+      setDeletedItem(null);
+      setCountdown(0);
+    }
+  };
 
   // Function that modifies an item from the list
 
@@ -430,6 +446,14 @@ const Grocery_budget_tracker = () => {
           </>
         )}
       </div>
+      {deletedItem && (
+        <div className={isDarkMode ? "undo-toast app light" : "undo-toast"}>
+          Item deleted!
+          <button onClick={handleUndo}>
+            Undo <span>({countdown})</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 };
