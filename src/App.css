@@ -1,7 +1,9 @@
-#body{
-  margin: 10px;
+#body {
+  margin: 10px auto;
   padding: 10px;
-
+  border-radius: 20px;
+  position: relative;
+  box-shadow: 0px 0px 12px rgba(41, 39, 38, 0.801);
 }
 .app.dark {
   background-color: #2c2a29;
@@ -11,4 +13,62 @@
   background-color: #ffffff;
   color: #2c2a29;
 }
+.theme-toggle {
+  position: absolute;
+  width: 50px;
+  height: 30px;
+  border-radius: 50px;
+  right: 40px;
+  top: 20px;
+  border: 1px solid;
+  background-color: #ccc;
+  transition: background 0.3s ease;
+  cursor: pointer;
+  box-shadow: 1px 3px 3px rgb(114, 113, 113);
+}
 
+.theme-toggle span {
+  font-size: 20px;
+  padding: 0;
+  margin: 0;
+  justify-content: start;
+  align-items: center;
+  display: flex;
+  transition: transform 0.4s ease;
+}
+.swipeRight {
+  transform: translateX(20px);
+}
+.swipeLeft {
+  transform: translateX(0px);
+}
+.undo-toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translate(-50%);
+  background-color: #333;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  /* animation: slideDown 0.3s ease; */
+}
+.undo-toast.dark {
+  background-color: #ffffff;
+  color: #2c2a29;
+}
+.undo-toast.light {
+  background-color: #2c2a29;
+  color: #ffffff;
+}
+.undo-toast button {
+  background: transparent;
+  padding: 5px;
+  border: none;
+  color: #222425;
+  cursor: pointer;
+  font-weight: bold;
+}

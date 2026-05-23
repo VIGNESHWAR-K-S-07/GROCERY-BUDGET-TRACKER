@@ -8,10 +8,13 @@
   position: relative;
   max-width: 700px;
   width: 90%;
+  opacity: 0;
   margin: 40px auto;
   padding: 10px;
   border-radius: 10px;
   box-shadow: 0px 0px 12px rgba(226, 115, 12, 0.801);
+  animation: slideUp 1s forwards ease;
+  animation-delay: 1.5s;
 }
 
 h1 {
@@ -192,12 +195,20 @@ table {
   color: #e2dfdf;
 }
 .app.dark .duplicateMsg {
-  background-color: #442222;
-  color: #ffb3b3;
+  /* background-color: #d37c7c; */
+  padding: 5px;
+  border-radius: 20px;
+  color: rgb(228, 51, 51);
 }
 .app.light {
   background-color: #ffffff;
   color: #2c2a29;
+}
+
+.duplicateMsg {
+  padding: 5px;
+  border-radius: 20px;
+  color: #fe2727;
 }
 
 .swipeRight {
@@ -226,9 +237,7 @@ table {
   position: fixed;
   bottom: 20px;
   left: 50%;
-  transform: translate(-50%, -50%);
-  background: #333;
-  color: white;
+  transform: translate(-50%);
   padding: 10px 16px;
   border-radius: 8px;
   display: flex;
@@ -236,19 +245,13 @@ table {
   align-items: center;
   /* animation: slideDown 0.3s ease; */
 }
-.undo-toast .app.light {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #ffffff;
+.undo-toast.dark {
+  background-color: #ffffff;
   color: #2c2a29;
-  padding: 10px 16px;
-  border-radius: 8px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  /* animation: slideDown 0.3s ease; */
+}
+.undo-toast.light {
+  background-color: #2c2a29;
+  color: #ffffff;
 }
 .undo-toast button {
   background: transparent;

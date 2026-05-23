@@ -1,0 +1,37 @@
+.sn-pro-p {
+  font-family: sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+.intro-section {
+  padding: 8px;
+  margin: 40px auto;
+}
+
+.intro-section h2,
+p {
+  opacity: 0;
+  transform: translateY(50px);
+  animation: scrollUp 1s forwards ease;
+}
+
+@keyframes scrollUp {
+  0% {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
+.intro-section h2 {
+  animation-delay: 0.3s;
+}
+.intro-section p {
+  animation-delay: 0.6s;
+  text-align: justify;
+  font-size: 20px;
+}

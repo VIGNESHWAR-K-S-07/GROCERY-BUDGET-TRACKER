@@ -5,7 +5,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import "../components_css/grocery_budget_tracker.css";
 
-const Grocery_budget_tracker = () => {
+const Grocery_budget_tracker = ({ isDarkMode }) => {
   const [isListEmpty, setIsListEmpty] = useState(true);
   const [items, setItems] = useState([]);
   const [name, setNames] = useState("");
@@ -32,7 +32,6 @@ const Grocery_budget_tracker = () => {
     "SPICES",
     "OTHERS",
   ];
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [duplicateIndex, setDuplicateIndex] = useState(null);
   const [deletedItem, setDeletedItem] = useState(null);
   const [deletingID, setDeletingID] = useState(null);
@@ -41,16 +40,6 @@ const Grocery_budget_tracker = () => {
   const [countdown, setCountdown] = useState(0);
 
   const rowRef = useRef([]);
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme === "dark") {
-      setIsDarkMode(true);
-    }
-  }, []);
-  useEffect(() => {
-    localStorage.setItem("theme", isDarkMode ? "dark" : "light");
-  }, [isDarkMode]);
   useEffect(() => {
     if (duplicateIndex !== null && rowRef.current[duplicateIndex]) {
       rowRef.current[duplicateIndex].scrollIntoView({
@@ -210,244 +199,227 @@ const Grocery_budget_tracker = () => {
   }
   //   console.log(items);
   return (
-    <div className={isDarkMode ? "app dark" : "app light"} id="body">
-      <div className="main-container">
-        <div
-          className="theme-toggle"
+    <div className="main-container">
+      <h1>WELCOME TO THE GROCERY BUDGET TRACKER!</h1>
+      <h2>Lets track every rupee spend on grocery!</h2>
+      {/* FORM STARTS */}
+      <form onSubmit={handleItems} className="input-form">
+        <input
+          type="text"
+          placeholder="Item name"
+          value={name}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (/^[A-Za-z\s]*$/.test(value)) {
+              setNames(value);
+            }
+          }}
+        />
+
+        <input
+          type="number"
+          placeholder="Weight"
+          value={Weight}
+          onChange={(e) => {
+            setWeight(e.target.value);
+          }}
+        />
+        <select
+          className="weightUnit-dropdown"
+          value={weightUnit}
+          onChange={(e) => setWeightUnit(e.target.value)}
+        >
+          <option value="">select Unit</option>
+          <option value="kg">kg</option>
+          <option value="g">g</option>
+          <option value="l">l</option>
+          <option value="ml">ml</option>
+        </select>
+
+        <input
+          type="Number"
+          placeholder="price"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          min={0}
+        />
+
+        <input
+          type="Number"
+          placeholder="Quantity"
+          value={quantity}
+          onChange={(e) => setQuantity(e.target.value)}
+          min={0}
+        />
+
+        <input
+          type="Text"
+          placeholder="Search Category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
           onClick={() => {
-            setIsDarkMode(!isDarkMode);
+            if (name && price > 0 && quantity > 0) {
+              setShowlist(true);
+              setErrorMessage([]);
+            } else {
+              setErrorMessage(
+                "Please fill the Item Name, Price and Quantity before selecting a Category!",
+              );
+              setTimeout(() => setErrorMessage(""), 3000);
+            }
+          }}
+          disabled={!name || price < 0 || quantity < 0}
+        />
+
+        {showList && (
+          <ul className="drop-downList">
+            {categoryList
+              .filter((item) =>
+                item.toLowerCase().startsWith(category.toLowerCase()),
+              )
+              .slice(0, 5)
+              .map((item, index) => (
+                <li
+                  key={index}
+                  onClick={() => {
+                    setCategory(item);
+                    setShowlist(false);
+                  }}
+                  style={{
+                    cursor: "pointer",
+                    padding: "4px 8px",
+                    border: "1px solid #2e2525ff",
+                  }}
+                >
+                  {item}
+                </li>
+              ))}
+          </ul>
+        )}
+
+        <button type="submit" id="sumbitBtn">
+          Add items
+        </button>
+        {SuccessMessage && (
+          <p style={{ color: "green", fontWeight: "bold" }}>{SuccessMessage}</p>
+        )}
+
+        {errorMessage && (
+          <p style={{ fontWeight: "bold" }} className="duplicateMsg">
+            {errorMessage}
+          </p>
+        )}
+      </form>
+      {/* FORM ENDS */}
+      <h2>Items list:</h2>
+      <div className="table-container">
+        <table
+          id="grocery-table"
+          border={1}
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+            textAlign: "center",
           }}
         >
-          <span className={isDarkMode ? "swipeRight" : "swipeLeft"}>
-            {isDarkMode ? "🌞" : "🌙"}
-          </span>
-        </div>
-        <h1>WELCOME TO THE GROCERY BUDGET TRACKER!</h1>
-        <h2>Lets track every rupee spend on grocery!</h2>
-        {/* FORM STARTS */}
-        <form onSubmit={handleItems} className="input-form">
-          <input
-            type="text"
-            placeholder="Item name"
-            value={name}
-            onChange={(e) => {
-              const value = e.target.value;
-              if (/^[A-Za-z\s]*$/.test(value)) {
-                setNames(value);
-              }
-            }}
-          />
-
-          <input
-            type="number"
-            placeholder="Weight"
-            value={Weight}
-            onChange={(e) => {
-              setWeight(e.target.value);
-            }}
-          />
-          <select
-            className="weightUnit-dropdown"
-            value={weightUnit}
-            onChange={(e) => setWeightUnit(e.target.value)}
-          >
-            <option value="">select Unit</option>
-            <option value="kg">kg</option>
-            <option value="g">g</option>
-            <option value="l">l</option>
-            <option value="ml">ml</option>
-          </select>
-
-          <input
-            type="Number"
-            placeholder="price"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            min={0}
-          />
-
-          <input
-            type="Number"
-            placeholder="Quantity"
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
-            min={0}
-          />
-
-          <input
-            type="Text"
-            placeholder="Search Category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            onClick={() => {
-              if (name && price > 0 && quantity > 0) {
-                setShowlist(true);
-                setErrorMessage([]);
-              } else {
-                setErrorMessage(
-                  "Please fill the Item Name, Price and Quantity before selecting a Category!",
-                );
-                setTimeout(() => setErrorMessage(""), 3000);
-              }
-            }}
-            disabled={!name || price < 0 || quantity < 0}
-          />
-
-          {showList && (
-            <ul className="drop-downList">
-              {categoryList
-                .filter((item) =>
-                  item.toLowerCase().startsWith(category.toLowerCase()),
-                )
-                .slice(0, 5)
-                .map((item, index) => (
-                  <li
-                    key={index}
-                    onClick={() => {
-                      setCategory(item);
-                      setShowlist(false);
-                    }}
-                    style={{
-                      cursor: "pointer",
-                      padding: "4px 8px",
-                      border: "1px solid #2e2525ff",
-                    }}
-                  >
-                    {item}
-                  </li>
-                ))}
-            </ul>
-          )}
-
-          <button type="submit" id="sumbitBtn">
-            Add items
-          </button>
-          {SuccessMessage && (
-            <p style={{ color: "green", fontWeight: "bold" }}>
-              {SuccessMessage}
-            </p>
-          )}
-
-          {errorMessage && (
-            <p
-              style={{ color: "red", fontWeight: "bold" }}
-              className="duplicateMsg"
-            >
-              {errorMessage}
-            </p>
-          )}
-        </form>
-        {/* FORM ENDS */}
-        <h2>Items list:</h2>
-        <div className="table-container">
-          <table
-            id="grocery-table"
-            border={1}
+          <thead>
+            <tr>
+              <th>Items</th>
+              <th>Price</th>
+              <th>Weight in Kg / Ml</th>
+              <th>Quantity</th>
+              <th>Total Price</th>
+              <th>Category</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody
             style={{
-              width: "100%",
+              width: "50%",
               borderCollapse: "collapse",
+              fontWeight: "bold",
               textAlign: "center",
             }}
           >
-            <thead>
-              <tr>
-                <th>Items</th>
-                <th>Price</th>
-                <th>Weight in Kg / Ml</th>
-                <th>Quantity</th>
-                <th>Total Price</th>
-                <th>Category</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody
-              style={{
-                width: "50%",
-                borderCollapse: "collapse",
-                fontWeight: "bold",
-                textAlign: "center",
-              }}
-            >
-              {items.map(function (item, index) {
-                return (
-                  <tr
-                    className={
-                      duplicateIndex === index ? "highlight" : "table-row"
-                    }
-                    key={item.id}
-                    ref={(e) => (rowRef.current[index] = e)}
-                  >
-                    <td>{item.name}</td>
-                    <td>{item.price}</td>
-                    <td>
-                      {item.Weight}
-                      {item.weightUnit}
-                    </td>
-                    <td>{item.quantity}</td>
-                    <td>{item.price * item.quantity}</td>
-                    <td>{item.category}</td>
-                    <td>
-                      <button
-                        className="Delete-btn"
-                        onClick={() => {
-                          return removeItems(item.id);
-                        }}
-                      >
-                        Delete
-                      </button>
-                      <FaTrash
-                        className="deleteIcon"
-                        onClick={() => {
-                          return removeItems(item.id);
-                        }}
-                      />
-                    </td>
-                    <td>
-                      <button
-                        className="Edit-btn"
-                        onClick={() => {
-                          return handleEdit(item.id);
-                        }}
-                      >
-                        Edit
-                      </button>
-                      <FaEdit
-                        className="editIcon"
-                        onClick={() => {
-                          return handleEdit(item.id);
-                        }}
-                      />
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-
-        <h3>
-          Total Budget: Rs{" "}
-          {items.reduce(function (total, item) {
-            return total + item.price * item.quantity;
-          }, 0)}
-        </h3>
-        <h2>Total Value : Rs {totalAmount}</h2>
-        <button onClick={clearList} id="clearAll">
-          Clear All
-        </button>
-        {isListEmpty ? (
-          ""
-        ) : (
-          <>
-            <h3>click here to download your list!</h3>
-            <button className="Download-btn" onClick={downloadPdf}>
-              Download as PDF
-            </button>
-          </>
-        )}
+            {items.map(function (item, index) {
+              return (
+                <tr
+                  className={
+                    duplicateIndex === index ? "highlight" : "table-row"
+                  }
+                  key={item.id}
+                  ref={(e) => (rowRef.current[index] = e)}
+                >
+                  <td>{item.name}</td>
+                  <td>{item.price}</td>
+                  <td>
+                    {item.Weight}
+                    {item.weightUnit}
+                  </td>
+                  <td>{item.quantity}</td>
+                  <td>{item.price * item.quantity}</td>
+                  <td>{item.category}</td>
+                  <td>
+                    <button
+                      className="Delete-btn"
+                      onClick={() => {
+                        return removeItems(item.id);
+                      }}
+                    >
+                      Delete
+                    </button>
+                    <FaTrash
+                      className="deleteIcon"
+                      onClick={() => {
+                        return removeItems(item.id);
+                      }}
+                    />
+                  </td>
+                  <td>
+                    <button
+                      className="Edit-btn"
+                      onClick={() => {
+                        return handleEdit(item.id);
+                      }}
+                    >
+                      Edit
+                    </button>
+                    <FaEdit
+                      className="editIcon"
+                      onClick={() => {
+                        return handleEdit(item.id);
+                      }}
+                    />
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
+
+      <h3>
+        Total Budget: Rs{" "}
+        {items.reduce(function (total, item) {
+          return total + item.price * item.quantity;
+        }, 0)}
+      </h3>
+      <h2>Total Value : Rs {totalAmount}</h2>
+      <button onClick={clearList} id="clearAll">
+        Clear All
+      </button>
+      {isListEmpty ? (
+        ""
+      ) : (
+        <>
+          <h3>click here to download your list!</h3>
+          <button className="Download-btn" onClick={downloadPdf}>
+            Download as PDF
+          </button>
+        </>
+      )}
       {deletedItem && (
-        <div className={isDarkMode ? "undo-toast app light" : "undo-toast"}>
+        <div className={`undo-toast ${isDarkMode ? "dark" : "light"}`}>
           Item deleted!
           <button onClick={handleUndo}>
             Undo <span>({countdown})</span>
