@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import Grocery_budget_tracker from "./components/grocery_budget_tracker";
-import Intro from "./components/Intro";
+import Intro from "./components/intro";
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false);
